@@ -1,11 +1,11 @@
 
 # Fabric Dispenser Cauldron
 
-### This is a Fabric mod for 1.17 and above!
+### This is a Fabric mod for ~~1.17 and above~~ 1.20.2!
 
 ## Usage
 
-Works for both singelplayer and servers. Clients don't need this mod when playing on a server.
+Works for both singleplayer and servers. Clients don't need this mod when playing on a server.
 
 Now you can finally fully automate that dripstone lava farm! :)
 
