@@ -27,17 +27,17 @@ public abstract class ItemDispenserBehaviorMixin {
 
 	@Inject(at = @At("HEAD"), method = "dispenseSilently", cancellable = true)
 	public void CauldronMixin(BlockPointer pointer, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
-        World world = pointer.getWorld();
+        World world = pointer.world();
         if (world.isClient) {
             return;
         }
 
-        if (pointer.getBlockState().getBlock() != Blocks.DISPENSER) {
+        if (pointer.state().getBlock() != Blocks.DISPENSER) {
             return;
         }
 
-        DispenserBlockEntity dispenser = (DispenserBlockEntity)pointer.getBlockEntity();
-        BlockPos pos = pointer.getPos().offset(pointer.getBlockState().get(DispenserBlock.FACING));
+        DispenserBlockEntity dispenser = (DispenserBlockEntity)pointer.blockEntity();
+        BlockPos pos = pointer.pos().offset(pointer.state().get(DispenserBlock.FACING));
         BlockState block_state = world.getBlockState(pos);
         Block block = block_state.getBlock();
         Item item = stack.getItem();
@@ -58,7 +58,7 @@ public abstract class ItemDispenserBehaviorMixin {
             if (HandleDispense(stack, bucket, dispenser, cir)) {
                 customDispenseSilently(pointer, bucket);
             }
-        
+
         // Handles empty bottles on partly or full cauldrons
         } else if (item == Items.GLASS_BOTTLE) {
             if (!Main.CauldronToBottle.containsKey(block)) {
@@ -110,8 +110,8 @@ public abstract class ItemDispenserBehaviorMixin {
     }
 
     public ItemStack customDispenseSilently(BlockPointer pointer, ItemStack stack) {
-        BlockPos block_pos = pointer.getPos().offset(pointer.getBlockState().get(DispenserBlock.FACING));
-        BlockPos dispenser_pos = pointer.getPos();
+        BlockPos block_pos = pointer.pos().offset(pointer.state().get(DispenserBlock.FACING));
+        BlockPos dispenser_pos = pointer.pos();
 
         double velocity_x = block_pos.getX() - dispenser_pos.getX();
         double velocity_y = block_pos.getY() - dispenser_pos.getY();
@@ -125,8 +125,8 @@ public abstract class ItemDispenserBehaviorMixin {
         if (velocity_y != 0) { velocity_y /= 1.5; offset_y = 0.2; }
         if (velocity_z != 0) { velocity_z /= 1.5; offset_z = 0.2; }
         
-        World world = pointer.getWorld();
-        ItemEntity entity = new ItemEntity(world, pointer.getX() + offset_x, pointer.getY() + offset_y, pointer.getZ() + offset_z, stack, velocity_x, velocity_y, velocity_z);
+        World world = pointer.world();
+        ItemEntity entity = new ItemEntity(world, pointer.pos().getX() + offset_x, pointer.pos().getY() + offset_y, pointer.pos().getZ() + offset_z, stack, velocity_x, velocity_y, velocity_z);
         world.spawnEntity(entity);
         
         return stack;
